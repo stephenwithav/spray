@@ -269,7 +269,8 @@ decreasing by one for each subsequent word."
     (overlay-put spray--base-overlay 'before-string
                  (concat spray--margin-string
                          (make-string (- 5 (- accent beg)) ?\s)))
-    (narrow-to-region beg end)))
+    (if (< (- end beg) 30))
+	(narrow-to-region beg end))))
 
 (defun spray--update ()
   (cond ((not (zerop spray--initial-delay))
