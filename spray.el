@@ -131,10 +131,15 @@ decreasing by one for each subsequent word."
 
 (defcustom spray-unsupported-minor-modes
   '(buffer-face-mode smartparens-mode highlight-symbol-mode
-		     column-number-mode)
+    column-number-mode)
   "Minor modes to toggle off when in spray mode."
   :group 'spray
   :type '(list symbol))
+
+(defcustom spray-skip-words-longer-than 30
+  "Don't show words if they exceed this length."
+  :group 'spray
+  :type 'integer)
 
 
 ;; * faces
@@ -265,12 +270,15 @@ decreasing by one for each subsequent word."
                             (t 0))))
     (move-overlay spray--accent-overlay (1- accent) accent)
     (move-overlay spray--base-overlay beg end)
+    ;; (message beg)
+    ;; (message end)
     (spray-set-margins)
     (overlay-put spray--base-overlay 'before-string
                  (concat spray--margin-string
                          (make-string (- 5 (- accent beg)) ?\s)))
-    (if (< (- end beg) 30))
-	(narrow-to-region beg end))))
+    (if (< (- end beg) spray-skip-words-longer-than)
+        (narrow-to-region beg end)
+      (narrow-to-region end end))))
 
 (defun spray--update ()
   (cond ((not (zerop spray--initial-delay))
